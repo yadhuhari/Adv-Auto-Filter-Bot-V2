@@ -4,7 +4,9 @@ import asyncio
 
 from pyrogram import Client, filters, enums
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+import random
 from pyrogram.errors import ButtonDataInvalid, FloodWait
+
 
 from bot.database import Database # pylint: disable=import-error
 from bot.bot import Bot # pylint: disable=import-error
@@ -14,6 +16,11 @@ FIND = {}
 INVITE_LINK = {}
 ACTIVE_CHATS = {}
 db = Database()
+
+PICS = [
+ "https://telegra.ph/file/0a0a44828a9854bab75a7.jpg",
+ "https://telegra.ph/file/00b81ceb39ff1e1128c34.jpg"
+]
 
 @Bot.on_message(filters.text & filters.group, group=0)
 async def auto_filter(bot, update):
@@ -28,7 +35,8 @@ async def auto_filter(bot, update):
     if ("https://" or "http://") in update.text:
         return
     
-    query = re.sub(r"[1-2]\d{3}", "", update.text) # Targetting Only 1000 - 2999 😁
+    query = re.sub(r"\b(pl(i|e)*?(s|z+|ease|se|ese|(e+)s(e)?)|((send|snd|giv(e)?|gib)(\sme)?)|movie(s)?|new|latest|br((o|u)h?)*|^h(e|a)?(l)*(o)*|mal(ayalam)?|t(h)?amil|file|that|find|und(o)*|kit(t(i|y)?)?o(w)?|thar(u)?(o)*w?|kittum(o)*|aya(k)*(um(o)*)?|full\smovie|any(one)|with\ssubtitle(s)?)",
+        "", update.text) # Targetting Only 1000 - 2999 😁
     
     if len(query) < 2:
         return
@@ -201,11 +209,10 @@ async def auto_filter(bot, update):
         reply_markup = InlineKeyboardMarkup(result[0])
 
         try:
-            await bot.send_message(
-                chat_id = update.chat.id,
-                text=f"Found {(len_results)} Results For Your Query: <code>{query}</code>",
+            await update.reply_photo(
+                photo=random.choice(PICS),
+                caption=f"Hᴇʏ {update.from_user.mention}, Hᴇʀᴇ ɪs Wʜᴀᴛ I Fᴏᴜɴᴅ Iɴ Mʏ Dᴀᴛᴀʙᴀsᴇ Fᴏʀ Yᴏᴜʀ Qᴜᴇʀʏ <code>{query}</code>./n ♻️ 𝙅𝙊𝙄𝙉 :- @crazy_cinemas_official/n ♻️ 𝙅𝙊𝙄𝙉 :- @crazy_cinemas_group",
                 reply_markup=reply_markup,
-                parse_mode=enums.ParseMode.HTML,
                 reply_to_message_id=update.id
             )
 
@@ -285,4 +292,5 @@ async def recacher(group_id, ReCacheInvite=True, ReCacheActive=False, bot=Bot, u
             
             ACTIVE_CHATS[str(group_id)] = achatId
     return 
+
 
