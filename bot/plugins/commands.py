@@ -6,6 +6,7 @@ from pyrogram import filters, Client, enums
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from bot import Translation, LOGGER # pylint: disable=import-error
 from bot.database import Database # pylint: disable=import-error
+import random
 
 db = Database()
 
@@ -56,13 +57,6 @@ File Information
                     ]
                 )
             )
-        await update.reply_video(
-            video=random.choice(VIDS),
-            caption=f"""Hey {update.from_user.mention} 😍
-            
-Thanks for use me. I know you will come again for me..!!
-"""
-        )
         except Exception as e:
             await update.reply_text(f"<b>Error:</b>\n<code>{e}</code>", True, parse_mode=enums.ParseMode.HTML)
             LOGGER(__name__).error(e)
