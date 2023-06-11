@@ -9,6 +9,10 @@ from bot.database import Database # pylint: disable=import-error
 
 db = Database()
 
+VIDS = [
+ "https://telegra.ph/file/e566e33d594c37af8b5b5.mp4"
+]
+
 @Client.on_message(filters.command(["start"]) & filters.private, group=1)
 async def start(bot, update):
     
@@ -18,12 +22,23 @@ async def start(bot, update):
         file_uid = False
     
     if file_uid:
-        file_id, file_name, file_caption, file_type = await db.get_file(file_uid)
+        file_id, file_name, file_caption, file_type, file_size = await db.get_file(file_uid)
         
         if (file_id or file_type) == None:
             return
         
-        caption = file_caption if file_caption != ("" or None) else ("<code>" + file_name + "</code>")
+        caption=f"""Hey {update.from_user.mention} 😍
+        
+Here is your file..!!
+        
+File Information
+-----------------
+📁 File Name   : <code> {file_name} </code>
+⚜ File Caption : <code> {file_caption} </code>
+⚙ File Size    : <code> {file_size} </code>
+🗂 File ID      : <code> {file_id} </code>
+🔅 File Type    : <code> {file_type} </code>"""
+       
         try:
             await update.reply_cached_media(
                 file_id,
@@ -35,12 +50,19 @@ async def start(bot, update):
                         [
                             InlineKeyboardButton
                                 (
-                                    'Developers', url="https://t.me/CrazyBotsz"
+                                    'Developers', url="https://t.me/crazy_cinemas_official"
                                 )
                         ]
                     ]
                 )
             )
+        await update.reply_video(
+            video=random.choice(VIDS),
+            caption=f"""Hey {update.from_user.mention} 😍
+            
+Thanks for use me. I know you will come again for me..!!
+"""
+        )
         except Exception as e:
             await update.reply_text(f"<b>Error:</b>\n<code>{e}</code>", True, parse_mode=enums.ParseMode.HTML)
             LOGGER(__name__).error(e)
